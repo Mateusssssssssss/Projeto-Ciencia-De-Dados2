@@ -1,6 +1,6 @@
 import pandas as pd
 import numpy as np
-from sklearn.metrics import confusion_matrix
+from sklearn.metrics import confusion_matrix, recall_score, f1_score
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder, OneHotEncoder
 from sklearn.preprocessing import StandardScaler
@@ -83,11 +83,24 @@ classifier.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['
 classifier.fit(x_treinamento, y_treinamento, epochs=1000, validation_data=(x_teste, y_teste))
 
 #Previsão
+# Previsão
 previsoes = classifier.predict(x_teste)
-previsoes = np.argmax(previsoes, axis=1)  
+previsoes = np.argmax(previsoes, axis=1)  # Convertendo previsões para classe única
+
+# Convertendo y_teste de volta para as classes (sem one-hot)
+y_teste_classes = np.argmax(y_teste, axis=1)
 
 # Matriz de confusão
-confusao = confusion_matrix(np.argmax(y_teste,axis=1),previsoes)
+confusao = confusion_matrix(y_teste_classes, previsoes)
 print(f'Confusão: {confusao}')
 
+# Calculando o recall
+# Usando 'macro' para média equilibrada
+#o recall é importante porque indica a capacidade do modelo de identificar corretamente todos os casos positivos
+recall = recall_score(y_teste_classes, previsoes, average='macro')  
+print(f'Recall: {recall}')
 
+# 'weighted' leva em consideração o desbalanceamento das classes
+#Calcula a média ponderada de F1-Score, levando em consideração o número de amostras de cada classe.
+f1 = f1_score(y_teste_classes, previsoes, average='weighted')  
+print(f'F1-Score: {f1}')
