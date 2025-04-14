@@ -43,7 +43,7 @@ classe_encoded = to_categorical(classe_encoded, num_classes=qtd_class)
 x_treinamento, x_teste, y_treinamento, y_teste = train_test_split(previsores_encoder,
                                                                    classe_encoded,
                                                                    test_size=0.3,
-                                                                   random_state=0
+                                                                   random_state=1
                                                                    )
 
 #StandardScaler(): padroniza os dados, transformando-os para ter média 0 e desvio padrão 1. 
