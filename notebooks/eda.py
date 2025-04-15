@@ -58,3 +58,7 @@ plt.xticks(rotation=90)
 plt.tight_layout()
 plt.show()
 
+
+#Verificar quantidade de classes
+qtd_class = dados['class'].nunique()
+print(f'Quantidade de classes: {qtd_class}')

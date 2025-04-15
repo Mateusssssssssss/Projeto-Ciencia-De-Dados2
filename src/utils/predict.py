@@ -4,10 +4,10 @@ import numpy as np
 #Previsao
 
 # Obter as probabilidades preditas para todas as classes
-pred_proba = modelo.predict_proba(x_test)
+pred_proba_xg = modelo.predict_proba(x_test)
 
 # Previsões padrão com o maior valor de probabilidade (sem ajuste de threshold)
-pred_labels = np.argmax(pred_proba, axis=1)
+pred_labels_xg = np.argmax(pred_proba_xg, axis=1)
 
 # Dicionário com os thresholds personalizados
 custom_thresholds = {
@@ -19,5 +19,5 @@ custom_thresholds = {
 
 # Aplica os ajustes diretamente nas previsões
 for classe, threshold in custom_thresholds.items():
-    prob_classe = pred_proba[:, classe]
-    pred_labels[prob_classe >= threshold] = classe
+    prob_classe = pred_proba_xg[:, classe]
+    pred_labels_xg[prob_classe >= threshold] = classe

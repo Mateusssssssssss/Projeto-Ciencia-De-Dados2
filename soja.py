@@ -82,7 +82,7 @@ classifier.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['
 # Treinamento, dividindo a base de treinamento em  uma porção para validação(validation_data)
 classifier.fit(x_treinamento, y_treinamento, epochs=1000, validation_data=(x_teste, y_teste))
 
-#Previsão
+
 # Previsão
 previsoes = classifier.predict(x_teste)
 previsoes = np.argmax(previsoes, axis=1)  # Convertendo previsões para classe única
