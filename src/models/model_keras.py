@@ -5,13 +5,6 @@ from keras.api.layers import Dense
 
 
 
-#fit_transform(x_treinamento) faz duas coisas ao mesmo tempo.
-#fit(): Calcula a média e o desvio padrão das colunas do x_treinamento.
-#transform(): Usa a fórmula do Z-score para transformar os dados.
-#Padronização dos dados
-x_train = sc.fit_transform(x_train)
-x_test = sc.transform(x_test)
-
 #Classificador da rede neural
 classifier = Sequential()
 

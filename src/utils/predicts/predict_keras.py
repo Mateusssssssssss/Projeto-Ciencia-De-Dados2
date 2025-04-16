@@ -8,4 +8,3 @@ pred_labels = np.argmax(pred_proba, axis=1)
 
 # Labels verdadeiros (caso estejam em one-hot)
 y_true = np.argmax(y_test, axis=1)
-

@@ -1,8 +1,9 @@
 from sklearn.metrics import (average_precision_score, classification_report,
                              confusion_matrix)
 
-from notebooks.preprocess_keras import *
-from src.utils.predict_keras import *
+from notebooks.preprocess import *
+from src.utils.predicts.predict_forest import *
+from sklearn.metrics import classification_report, confusion_matrix, average_precision_score
 
 def metrics(y_true, pred_labels, pred_proba):
     """
@@ -34,8 +35,4 @@ def metrics(y_true, pred_labels, pred_proba):
     print(confusion_matrix(y_true, pred_labels))
 
 # Metricas para o modelo xgboost.
-# metrics(y_test, pred_labels_xg, pred_proba_xg)
-
-# Metricas
-
-metrics(y_true, pred_labels, pred_proba)
+metrics(y_test, pred_labels_forest, pred_proba_forest)
