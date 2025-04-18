@@ -19,7 +19,7 @@ print(f'Tipos de doenças e a quantidade de ocorrências de cada uma:\n{doencas}
 # definir o estilo visual do gráfico no Seaborn.
 sns.set_theme(style="whitegrid")
 plt.figure(figsize=(14, 6))
-sns.countplot(y="class", data=dados, order=dados["class"].value_counts().index, hue="class", palette="tab20")
+sns.countplot(y="class", data=dados, order=dados["class"].value_counts().index, hue="class", color="skyblue")
 plt.title("Distribuição das doenças nas plantas")
 plt.xlabel("Tipo de Doença")
 plt.ylabel("Quantidade")
@@ -30,10 +30,13 @@ plt.show()
 # Aplicar o LabelEncoder na coluna 'class' para converter as classes em números
 labelencoder = LabelEncoder()
 
-# Loop para transformar todas as colunas categóricas do DataFrame
+encoders = {}
+
 for col in dados.columns:
-    if dados[col].dtype == 'object':  # Verifica se a coluna é do tipo 'object' (categórica)
-        dados[col] = labelencoder.fit_transform(dados[col])
+    if dados[col].dtype == 'object':
+        label = LabelEncoder()
+        dados[col] = label.fit_transform(dados[col])
+        encoders[col] = label  # salva o encoder da coluna
 
 # Calculando a correlação entre 'class' e as outras variáveis
 corr_class = dados.corrwith(dados['class'])
@@ -44,7 +47,7 @@ corr_class_df.columns = ['Variable', 'Correlation']
 
 # Plotando o gráfico de dispersão para a correlação
 plt.figure(figsize=(10, 6))  # Ajuste o tamanho da figura conforme necessário
-sns.scatterplot(x='Variable', y='Correlation', data=corr_class_df, s=100, marker='o', color='red')
+sns.scatterplot(x='Variable', y='Correlation', data=corr_class_df, s=100, marker='o', color='blue')
 
 # Adicionando título e rótulos
 plt.title("Correlação da 'class' com as outras variáveis")

@@ -3,7 +3,6 @@ from sklearn.metrics import (average_precision_score, classification_report,
 
 from notebooks.preprocess import *
 from src.utils.predicts.predict_forest import *
-from sklearn.metrics import classification_report, confusion_matrix, average_precision_score
 
 def metrics(y_true, pred_labels, pred_proba):
     """
