@@ -2,7 +2,7 @@ import joblib
 from api.preprocess import preprocess_input
 import numpy as np
 # Carrega modelo
-pipeline = joblib.load("models/pipeline_soja.pkl")
+pipeline = joblib.load("best_model/pipeline_soja.pkl")
 
 def prediction(data):
     input_dict = data.model_dump()  # Converte o objeto Pydantic (InputData) em um dicionário

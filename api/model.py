@@ -4,7 +4,8 @@
 from pydantic import BaseModel
 import joblib
 
-encoders = joblib.load('label_encoders.pkl')
+encoders = joblib.load('best_model/label_encoders.pkl')
+
 
 class InputData(BaseModel):
     date: str

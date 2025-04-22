@@ -20,7 +20,3 @@ def encode_and_save():
 
     # Salva os encoders em um arquivo .pkl
     joblib.dump(encoders, 'label_encoders.pkl')
-   
-
-if __name__ == "__main__":
-    encode_and_save()
