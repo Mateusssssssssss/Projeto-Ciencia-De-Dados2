@@ -39,5 +39,5 @@ def prediction(data):
     # Exibe o resultado com base na classe predita
     return {
         "probabilidade": round(float(pred_proba_forest[predicted_class]), 3),  # Exibe a probabilidade da classe predita
-        "Resultado": f"Doença {predicted_class}"  # Exibe o nome da doença predita (classe)
+        "Resultado": f" Tipo de Doença {predicted_class}"  # Exibe o nome da doença predita (classe)
     }

@@ -27,65 +27,10 @@ O código realiza a verificação de valores nulos no dataset e calcula a quanti
 null = dados.isnull().sum()
 qtd_class = dados['class'].nunique()
 ```
-
-### 3. Pré-processamento dos Dados
-- **One-Hot Encoding**: A variável 'previsores' foi transformada em uma representação binária utilizando o OneHotEncoder.
-- **Label Encoding**: A coluna 'classe' foi transformada em valores inteiros, seguidos de uma codificação One-Hot.
-- **Padronização**: Os dados foram normalizados com o uso do `StandardScaler` para garantir que as variáveis tenham a mesma escala.
-
-```python
-previsores_encoder  = onehotencoder.fit_transform(previsores)
-classe_encoded = labelencoder.fit_transform(classe)
-classe_encoded = to_categorical(classe_encoded, num_classes=qtd_class)
-```
-
-### 4. Divisão de Dados
-Os dados foram divididos entre treinamento e teste (70% para treinamento e 30% para teste).
-
-```python
-x_treinamento, x_teste, y_treinamento, y_teste = train_test_split(previsores_encoder, classe_encoded, test_size=0.3, random_state=0)
-```
-
-### 5. Construção do Modelo de Rede Neural
-A rede neural foi criada com camadas totalmente conectadas. Utilizou-se a função de ativação ReLU para as camadas ocultas e Softmax na camada de saída, devido à natureza do problema de classificação multiclasse.
-
-```python
-classifier = Sequential()
-classifier.add(Dense(units=64, kernel_initializer='uniform', activation='relu', input_dim= previsores_encoder.shape[1]))
-classifier.add(Dense(units=64, kernel_initializer='uniform', activation='relu'))
-classifier.add(Dense(units=qtd_class, kernel_initializer='uniform', activation='softmax'))
-```
-
-### 6. Treinamento e Validação
-O modelo foi treinado utilizando o algoritmo Adam, com a função de perda `categorical_crossentropy` (ideal para problemas de classificação multiclasse).
-
-```python
-classifier.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
-classifier.fit(x_treinamento, y_treinamento, epochs=1000, validation_data=(x_teste, y_teste))
-```
-
-### 7. Previsão e Avaliação
-O modelo fez previsões sobre os dados de teste, e a matriz de confusão foi gerada para avaliar o desempenho do modelo.
-
-```python
-previsoes = classifier.predict(x_teste)
-confusao = confusion_matrix(np.argmax(y_teste,axis=1),previsoes)
-```
-
-## Resultado
-
-O modelo alcançou uma acurácia muito alta no conjunto de teste, demonstrando ser eficaz na classificação das doenças em soja.
-
-
-
-# Detecção de Diabetes com XGBoost
-
-Projeto de classificação para previsão de casos de diabetes com uso de Machine Learning. Utilizamos o modelo **XGBoostClassifier**, com técnicas de balanceamento de classes e análise exploratória de dados (EDA).
-
 ---
 
 ## Objetivo
-Construir um modelo preditivo robusto capaz de detectar casos de diabetes a partir de um conjunto de dados clínicos, com máxima precisão e recall, especialmente para a classe minoritária (pacientes com diabetes).
+Construir um modelo preditivo robusto capaz de detectar doenças em soja a partir de um conjunto de dados clínicos, com máxima precisão e recall.
 
 ---
 
@@ -103,22 +48,27 @@ project/
 ├── data/
 │   ├── diabetes_prediction_dataset.csv  # Dataset original
 │   ├── dados.py               # Carregamento e manipulação dos dados
-│   ├── limpo.py               # Versão limpa ou tratada dos dados
+│   ├── dados_clear.py               # Versão limpa ou tratada dos dados
 │
 ├── notebooks/
 │   ├── eda.py                 # Análise exploratória de dados
-│   └── preprocessamento.py    # Balanceamento com SMOTE + undersampling, split treino/teste
+│   ├── preprocess.py          # split treino/teste
+|   ├── preprocess_keras.py    # OneHotEncoder, LabelEncoder, treino/teste
 │
 ├── src/
-│   ├── model_training.py      # Treinamento com XGBoost
-│   ├── model_evaluation.py    # Avaliação do modelo (classification_report, matriz de confusão)
-│   └── predict.py             # Predição e conversão de probabilidades em classes
+│   ├── models/            # Treinamento com Modelos Diferentes(model_forest, model_keras, etc ..)
+│   ├── utils/             # Pasta Metrics e Predicts
+|        ├── metrics/            # Metricas de todos os modelos (metrics_forest, metrics_keras, etc ..)
+│        └── predict/            # Predição de todos os modelos (predict_forest, predict_keras, etc ..)
 │
-├── models/
-│   ├── pipeline_diabetes.pkl  # Modelo final serializado
-│   └── best_model.py          # Lógica para escolha e exportação do melhor modelo
-│
-└── README.md                  # Documentação do projeto
+├── best_model/
+│   ├── pipeline_soja.pkl  # Melhor modelo serializado
+│   ├── model.py           # Lógica para escolha e exportação do melhor modelo
+|   ├── encoder.py         # Lógica para transformação dos dados em LabelEncoders
+|   └── label.encoders.pkl # Lógica de transformação serializado
+|
+├── dockerfile             # Arquivo com estrutura para subir para o docker
+└── README.md              # Documentação do projeto
 ```
 
 ---
@@ -170,14 +120,14 @@ Relatório de Classificação:
 
 ---
 
-# API de Previsão de Diabetes com FastAPI
+# API de Previsão de Doença em Soja com FastAPI
 
 Esta API realiza previsões de doenças com base em dados de doenças em soja, utilizando um modelo de machine learning treinado e integrado por meio da biblioteca FastAPI.
 
 ## Funcionalidades
 
-- Previsão se um paciente tem diabetes ou não
-- Retorna a probabilidade da previsão
+- Previsão de qual doença a soja está sofrendo
+- Retorna a probabilidade da previsão e qual doença
 - Utiliza modelo de machine learning serializado com `joblib`
 - Pré-processamento de dados categóricos e numéricos
 - Endpoint `POST` disponível para consumo por qualquer sistema
@@ -186,15 +136,43 @@ Esta API realiza previsões de doenças com base em dados de doenças em soja, u
 
 ```json
 {
-  "gender": "Male",
-  "age": 45,
-  "hypertension": 1,
-  "heart_disease": 0,
-  "smoking_history": "former",
-  "bmi": 28.7,
-  "HbA1c_level": 6.5,
-  "blood_glucose_level": 140
+  "date": "2025-04-24",
+  "plant_stand": "normal",
+  "precip": "low",
+  "temp": "high",
+  "hail": "no",
+  "crop_hist": "corn",
+  "area_damaged": "none",
+  "severity": "mild",
+  "seed_tmt": "treated",
+  "germination": "good",
+  "plant_growth": "vigorous",
+  "leaves": "healthy",
+  "leafspots_halo": "absent",
+  "leafspots_marg": "smooth",
+  "leafspot_size": "small",
+  "leaf_shread": "no",
+  "leaf_malf": "none",
+  "leaf_mild": "none",
+  "stem": "healthy",
+  "lodging": "none",
+  "stem_cankers": "absent",
+  "canker_lesion": "none",
+  "fruiting_bodies": "none",
+  "external_decay": "none",
+  "mycelium": "absent",
+  "int_discolor": "none",
+  "sclerotia": "absent",
+  "fruit_pods": "healthy",
+  "fruit_spots": "none",
+  "seed": "normal",
+  "mold_growth": "none",
+  "seed_discolor": "none",
+  "seed_size": "normal",
+  "shriveling": "none",
+  "roots": "healthy"
 }
+
 ```
 
 ---
@@ -203,15 +181,15 @@ Esta API realiza previsões de doenças com base em dados de doenças em soja, u
 
 ### `POST /predict`
 
-**Descrição:** Recebe os dados do paciente e retorna a probabilidade e o diagnóstico.
+**Descrição:** Recebe os dados da planta e retorna a probabilidade e o diagnóstico.
 
 ### Saída
 
 ```json
 {
-  "probabilidade": 0.823,
-  "diabetico": "Diabetico"
-}
+        "probabilidade": 0.897
+        "Resultado": "Tipo de Doença :"
+        }
 ```
 ### Erro
 
