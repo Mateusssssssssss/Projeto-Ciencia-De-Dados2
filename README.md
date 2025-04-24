@@ -399,7 +399,7 @@ Antes de taguear ou enviar qualquer imagem, veja quais imagens já estão dispon
 docker image 
 ```
 
-📌 Esse comando mostra uma lista com o **REPOSITORY** (nome), **TAG** e **IMAGE ID** das imagens que você criou ou puxou.
+Esse comando mostra uma lista com o **REPOSITORY** (nome), **TAG** e **IMAGE ID** das imagens que você criou ou puxou.
 
 ---
 
@@ -411,8 +411,8 @@ Antes de publicar a imagem, você precisa estar autenticado no Docker Hub.
 docker login
 ```
 
-🔸 Esse comando solicitará seu **nome de usuário** e **senha do Docker Hub**.  
-🔸 Após o login bem-sucedido, você poderá interagir com seu repositório remoto (push/pull).
+  Esse comando solicitará seu **nome de usuário** e **senha do Docker Hub**.  
+  Após o login bem-sucedido, você poderá interagir com seu repositório remoto (push/pull).
 
 ---
 
